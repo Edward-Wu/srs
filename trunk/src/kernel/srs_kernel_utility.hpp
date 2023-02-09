@@ -111,6 +111,11 @@ extern std::string srs_path_basename(std::string path);
 extern std::string srs_path_filename(std::string path);
 // Get the file extension of path, for instance, filext("live.flv")=".flv"
 extern std::string srs_path_filext(std::string path);
+// Get appname from the rtmp url
+extern std::string srs_parse_appname(std::string rtmpurl);
+// Get streamname from the rtmp url
+extern std::string srs_parse_streamname(std::string rtmpurl);
+
 
 // Whether stream starts with the avc NALU in "AnnexB" from ISO_IEC_14496-10-AVC-2003.pdf, page 211.
 // The start code must be "N[00] 00 00 01" where N>=0

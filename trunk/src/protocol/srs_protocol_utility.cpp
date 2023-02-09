@@ -80,12 +80,14 @@ void srs_discovery_tc_url(string tcUrl, string& schema, string& host, string& vh
     schema = uri.get_schema();
     host = uri.get_host();
     port = uri.get_port();
-    stream = srs_path_basename(uri.get_path());
+    //stream = srs_path_basename(uri.get_path());
+    stream = srs_parse_streamname(uri.get_path());
     param = uri.get_query().empty() ? "" : "?" + uri.get_query();
     param += uri.get_fragment().empty() ? "" : "#" + uri.get_fragment();
 
     // Parse app without the prefix slash.
-    app = srs_path_dirname(uri.get_path());
+    //app = srs_path_dirname(uri.get_path());
+    app = srs_parse_appname(uri.get_path());
     if (!app.empty() && app.at(0) == '/') app = app.substr(1);
     if (app.empty()) app = SRS_CONSTS_RTMP_DEFAULT_APP;
 

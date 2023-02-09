@@ -677,6 +677,80 @@ string srs_path_dirname(string path)
     return dirname;
 }
 
+//get the appname for compatibility with special urls, like rtmp://localhsot/live/rtsp://test
+//appname: live
+//streamname: rtsp://test
+string srs_parse_appname(string rtmpurl)
+{
+    std::string appname = "";
+    std::string url = rtmpurl;
+    std::size_t pos = std::string::npos;
+
+
+    //skip the ip or hostname
+    pos = url.find("/");
+    if (pos == std::string::npos) {
+        //log wrong rtmp url format, no app.
+    	srs_error("srs_parse_appname, no hostanem, url=%s, pos=%d.", url.c_str(), pos);
+        return "";
+    }
+    srs_trace("srs_parse_appname, skip hostanem, url=%s, pos=%d.", url.c_str(), pos);
+    url.erase(0, pos+1);
+
+    //get app
+    pos = url.find("/");
+    if (pos == std::string::npos) {
+        //log wrong rtmp url format, no app.
+    	srs_error("srs_parse_appname, get app failed, url=%s, pos=%d.", url.c_str(), pos);
+        return "";
+    }
+
+    appname = url.substr(0, pos);
+    srs_trace("srs_parse_appname, appname=%s, url=%s.", appname.c_str(), url.c_str());
+
+    return appname;
+}
+
+//get the streamname for compatibility with special urls, like rtmp://localhsot/live/rtsp://test
+string srs_parse_streamname(string rtmpurl)
+{
+    std::string stream_name = "";
+    std::string url = rtmpurl;
+    std::size_t pos = std::string::npos;
+
+
+    //skip the ip or hostname
+    pos = url.find("/");
+    if (pos == std::string::npos) {
+        //log wrong rtmp url format, no app.
+        srs_error("srs_parse_streamname, no hostname, url=%s, pos=%d.", rtmpurl.c_str(), pos);
+        return "";
+    }
+    srs_trace("srs_parse_streamname, skip hostanem, url=%s, pos=%d.\n", url.c_str(), pos);
+    url.erase(0, pos+1);
+
+    //skip app
+    pos = url.find("/");
+    if (pos == std::string::npos) {
+        //log wrong rtmp url format, no app.
+    	srs_error("srs_parse_streamname, skip app failed, url=%s, pos=%d.", rtmpurl.c_str(), pos);
+        return "";
+    }
+	srs_trace("srs_parse_streamname, skip app, url=%s, pos=%d.", url.c_str(), pos);
+    url.erase(0, pos+1);
+
+	stream_name = url;
+    //get stream name
+    pos = url.find("?");
+    if (pos != std::string::npos) {
+        stream_name = url.substr(0, pos);
+    }
+
+	srs_trace("srs_parse_streamname, stream_name=%s, url=%s.", stream_name.c_str(), rtmpurl.c_str());
+    return stream_name;
+}
+	
+	
 string srs_path_basename(string path)
 {
     std::string dirname = path;
